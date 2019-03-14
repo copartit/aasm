@@ -50,19 +50,6 @@ module AASM
 
       # Configure a logger, with default being a Logger to STDERR
       configure :logger, Logger.new(STDERR)
-
-      # make sure to raise an error if no_direct_assignment is enabled
-      # and attribute is directly assigned though
-      aasm_name = @name
-      klass.send :define_method, "#{@state_machine.config.column}=", ->(state_name) do
-        if self.class.aasm(:"#{aasm_name}").state_machine.config.no_direct_assignment
-          raise AASM::NoDirectAssignmentError.new(
-            'direct assignment of AASM column has been disabled (see AASM configuration for this class)'
-          )
-        else
-          super(state_name)
-        end
-      end
     end
 
     # This method is both a getter and a setter

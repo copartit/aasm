@@ -54,6 +54,18 @@ module AASM
           this.update(attribute_name => value)
         end
 
+        def aasm_enum(name=:default)
+          case AASM::StateMachineStore.fetch(self.class, true).machine(name).config.enum
+          when false then nil
+          when true then aasm_guess_enum_method(name)
+          else AASM::StateMachineStore.fetch(self.class, true).machine(name).config.enum
+          end
+        end
+
+        def aasm_guess_enum_method(name=:default)
+          self.class.aasm(name).attribute_name.to_s.pluralize.to_sym
+        end
+
         # Ensures that if the aasm_state column is nil and the record is new
         # that the initial state gets populated before validation on create
         #
